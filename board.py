@@ -66,14 +66,15 @@ class Action:
     #     self.worker = worker
 
     def __init__(self, board, direction, worker):
-    #worker contains old square. board = current board state
+    #'worker contains old square. board = current board state.
         self.board = board
         self.direction = direction
         self.worker = worker
+        self.new_square = self.new_square()
 
     def execute(self):
         pass
-        
+
     def check_board(self):
         new_square = self.new_square()
         if(new_square is None):
@@ -97,7 +98,6 @@ class Action:
         else:
             return None
 
-
 class Move(Action):
     # def __init__(self, board, new_square, worker):
     #     super().__init__(board, new_square, worker)
@@ -108,3 +108,10 @@ class Move(Action):
     def execute(self):
         #passing in self Move object
         self.board.execute_move(self)
+
+    def check_level(self):
+        #can move 1 level up, any number of levels down. Cannot move onto level 4.
+        if self.worker.new_square.level - self.worker.location.level <= 1 and self.worker.new_square.level != 4:
+            return True
+        else:
+            return False

@@ -1,6 +1,7 @@
 from memento import Memento
+from player import Player
 
-class Square():
+class Square:
     def __init__(self, row, col):
         self.row = row
         self.col = col
@@ -17,14 +18,20 @@ class Square():
         else:
             return '|{}{}'.format(self.level, self.occupant)
 
-
-class Board():
-    def __init__(self):
+class Board:
+    def __init__(self, color):
         self.squares = self.create_board()
         self.memento = Memento()
+        self.white_player = Player(self.memento, "white", self)
+        self.blue_player = Player(self.memento, "blue", self)
+        self.color = color
+        if self.color == "white":
+            self.curr_player = self.white_player
+        if self.color == "blue":
+            self.curr_player = self.blue_player
 
     def create_board(self):
-        '''create 2d array board w/o borders'''
+        #create 2d array board w/o borders
         board = []
         for row in range(5):
             new_row = []
@@ -45,4 +52,48 @@ class Board():
             if j == 5:
                 print('|')
         print('+--+--+--+--+--+')
-        
+
+    def _check_level(self, move):
+        #can move 1 level up, any number of levels down. Cannot move onto level 4.
+        if move.worker.location.level - move.worker.level <= 1 and new_square.level != 4:
+            return True
+        else:
+            return False
+
+    def execute_move(self, move):
+        pass
+
+class Action:
+    # def __init__(self, board, new_square, worker):
+    # #'worker contains old square. board = current board state.
+    #     self.board = board
+    #     self.new_square = new_square
+    #     self.worker = worker
+
+    def __init__(self, board, direction, worker):
+    #'worker contains old square. board = current board state.
+        self.board = board
+        self.direction = direction
+        self.worker = worker
+
+    def execute(self):
+        pass
+
+    def _check_level(self, move):
+        #can move 1 level up, any number of levels down. Cannot move onto level 4.
+        if move.worker.location.level - move.worker.level <= 1 and new_square.level != 4:
+            return True
+        else:
+            return False
+
+
+class Move(Action):
+    # def __init__(self, board, new_square, worker):
+    #     super().__init__(board, new_square, worker)
+
+    def __init__(self, board, direction, worker):
+        super().__init__(board, direction, worker)
+
+    def execute(self):
+        #passing in self Move object
+        self.board.execute_move(self)

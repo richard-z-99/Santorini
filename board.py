@@ -1,7 +1,7 @@
 from memento import Memento
 from player import Player
 
-directions = { 'n': (-1,0)), 'ne': (-1,1), 'e': (0,1), 'se': (1,1), 's': (1,0), 'sw': (1,-1), 'w': (0, -1), 'nw': (-1, -1)}
+directions = { 'n': (-1,0), 'ne': (-1,1), 'e': (0,1), 'se': (1,1), 's': (1,0), 'sw': (1,-1), 'w': (0, -1), 'nw': (-1, -1)}
 
 class Square:
     def __init__(self, row, col):
@@ -55,13 +55,6 @@ class Board:
                 print('|')
         print('+--+--+--+--+--+')
 
-    def _check_level(self, move):
-        #can move 1 level up, any number of levels down. Cannot move onto level 4.
-        if move.worker.location.level - move.worker.level <= 1 and new_square.level != 4:
-            return True
-        else:
-            return False
-
     def execute_move(self, move):
         pass
 
@@ -73,25 +66,13 @@ class Action:
     #     self.worker = worker
 
     def __init__(self, board, direction, worker):
-    #'worker contains old square. board = current board state.
+    #worker contains old square. board = current board state
         self.board = board
         self.direction = direction
         self.worker = worker
 
     def execute(self):
         pass
-
-        def check_board(self):
-        new_square = self.new_square()
-        if(new_square is None):
-            return False
-
-        elif(not new_square.occupant is None):
-            return False
-
-        else:
-            return True
-        
         
     def check_board(self):
         new_square = self.new_square()

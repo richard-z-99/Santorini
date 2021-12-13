@@ -1,6 +1,8 @@
 from memento import Memento
 from player import Player
 
+directions = { 'n': (-1,0)), 'ne': (-1,1), 'e': (0,1), 'se': (1,1), 's': (1,0), 'sw': (1,-1), 'w': (0, -1), 'nw': (-1, -1)}
+
 class Square:
     def __init__(self, row, col):
         self.row = row

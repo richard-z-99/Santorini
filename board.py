@@ -81,12 +81,40 @@ class Action:
     def execute(self):
         pass
 
-    def _check_level(self, move):
-        #can move 1 level up, any number of levels down. Cannot move onto level 4.
-        if move.worker.location.level - move.worker.level <= 1 and new_square.level != 4:
-            return True
-        else:
+        def check_board(self):
+        new_square = self.new_square()
+        if(new_square is None):
             return False
+
+        elif(not new_square.occupant is None):
+            return False
+
+        else:
+            return True
+        
+        
+    def check_board(self):
+        new_square = self.new_square()
+        if(new_square is None):
+            return False
+
+        elif(not new_square.occupant is None):
+            return False
+
+        else:
+            return True
+
+    def new_square(self):
+        cur_square = self.worker.location
+        coord_change = directions.get(self.direction)
+        new_row = cur_square.row + coord_change[0]
+        new_col = cur_square.col + coord_change[1]
+
+        if(0 <= new_row < 5 and 0 <= new_col < 5):
+            return self.board.squares[new_row][new_col]
+            
+        else:
+            return None
 
 
 class Move(Action):

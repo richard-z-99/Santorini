@@ -150,7 +150,37 @@ class PlayGame:
         #add new board to memento and update self.board
         self.memento.next(new_board)
         self.update_board()
+        
+    def check_build(self, build):
+        
 
+    def execute_build(self, build):
+        #old_square is square that worker just moved into.
+        #confusing b/c when undo/redo, move AND build have to change.
+
+        #save a copy of current board before doing anything else
+        self.update_board()
+        old_board_copy = copy.deepcopy(self.board)
+
+        old_row = build.worker.row
+        old_col = build.worker.col
+        new_row = build.get_new_coords()[0]
+        new_col = build.get_new_coords()[1]
+
+        #update level of new_square
+        #in main, need to check if valid build (not building above level 4)
+        new_square = self.board.get_square(new_row, new_col)
+        new_square.update_level()
+
+        #copy of board w/ changed level
+        new_board = copy.deepcopy(self.board)
+
+        #put old board copy into memento
+        self.memento.history[self.memento.cur_board] = old_board_copy
+
+        #add new board to memento and update self.board
+        self.memento.next(new_board)
+        self.update_board()
 
     def update_board(self):
         self.board = self.memento.history[self.memento.cur_board]

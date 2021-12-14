@@ -43,31 +43,26 @@ class Memento:
 
 
 class RunHuman:
-    def run(self):
+    #outputs instructions for human player, reads input, and executes corresponding move
+    def run(self, game):
+        player = game.board.curr_player
+        #TODO: loop until valid name inputted
         worker_name = input("Select a worker to move\n>")
-        if(worker_name == 'A'): 
-            worker = self.worker1
+        if(worker_name == player.worker1.name): 
+            worker = player.worker1
 
-        elif(worker_name == 'B'):
-            worker = self.worker2
+        elif(worker_name == player.worker2.name):
+            worker = player.worker2
 
-        else:
-            print("Invalid worker name input")
-            return
 
         #TODO: Error checking on move_direction, actually moving worker
         move_dir = input("Select a direction to move {}\n".format(directions.keys()))
-
-        if(not directions.has_key(move_dir)):
-            print("Invalid move input")
-            return
-
-        else:
-            pass
+        move = Move(worker, move_dir)
+        if(game.check_move(move)):
+            game.execute(move)
 
 
-        #TODO: Error checking on build_direction, actually building
-        build_dir = input("Select a direction to build {}}\n".format(directions.keys()))
+        #TODO: implement build 
 
 
 
@@ -78,7 +73,7 @@ class PlayGame:
     def __init__(self):
         self.memento = Memento()
 
-        #keeps track of most current board
+        #keeps track of current board
         self.board = self.memento.history[self.memento.cur_board]
 
 

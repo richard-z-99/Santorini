@@ -22,7 +22,7 @@ class Memento:
         board.get_square(1,1).occupant = board.blue_player.worker1
         board.get_square(3,3).occupant = board.blue_player.worker2
 
-        self.history = [Board("white")]
+        self.history = [board]
         self.cur_board = 0
     
     def undo(self):

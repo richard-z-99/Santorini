@@ -1,3 +1,5 @@
+import random
+
 directions = { 
     'n': (-1,0), 
     'ne': (-1,1), 

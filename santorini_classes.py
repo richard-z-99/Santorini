@@ -35,7 +35,7 @@ class Human(Player):
 
 
 class Worker:
-    def __init__(self, name, row=0, col=0):
+    def __init__(self, name, row=4, col=3):
         self.name = name
         self.row = row
         self.col = col
@@ -93,7 +93,7 @@ class Square:
         if (self.occupant == None):
             return '|{} '.format(self.level)
         else:
-            return '|{}{}'.format(self.level, self.occupant)
+            return '|{}{}'.format(self.level, self.occupant.name)
 
 
 
@@ -115,36 +115,24 @@ class Board:
             new_row = []
             for col in range(5):
                 new_row.append(Square(row, col))
-                board.append(new_row)
-                
+            board.append(new_row)
+        #print("hello")
         return board
 
-def print_board(self):
-        i = 0
-        j = 0
+    def print_board(self):
+            i = 0
+            j = 0
 
-        for i in range(5):
+            for i in range(5):
+                print('+--+--+--+--+--+')
+                s=""
+                for j in range(5):
+                    s += str(self.squares[i][j])
+                    j += 1
+                s += '|'
+                i += 1
+                print(s)
             print('+--+--+--+--+--+')
-            i += 1
-            s=""
-            for j in range(5):
-                s += str(self.squares[i][j])
-                j += 1
-            s += '|'
-            print(s)
-        print('+--+--+--+--+--+')
-
-        # while i < 5:
-        #     print('+--+--+--+--+--+')
-        #     i+=1
-        #     s = ""
-        #     while j < 5:
-        #         s += str(self.squares[i][j])
-        #         j+=1
-        #     s += '|'
-        #     print(s)
-        # print('+--+--+--+--+--+')
-
 
 
     def get_square(self, row, col):

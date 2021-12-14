@@ -42,10 +42,10 @@ class Worker:
         
         #initialize worker to default location depending on name
         if(self.name == 'A'):
-            self.update_location(1, 3)
+            self.update_location(3,1)
         
         elif(self.name == 'B'):
-            self.update_location(3, 1)
+            self.update_location(1,3)
 
         elif(self.name == 'Y'):
             self.update_location(1, 1)
@@ -119,20 +119,18 @@ class Board:
         #print("hello")
         return board
 
-    def print_board(self):
-            i = 0
-            j = 0
 
-            for i in range(5):
-                print('+--+--+--+--+--+')
-                s=""
-                for j in range(5):
-                    s += str(self.squares[i][j])
-                    j += 1
-                s += '|'
-                i += 1
-                print(s)
+
+    def print_board(self):
+        for i in range(5):
             print('+--+--+--+--+--+')
+            s=""
+            for j in range(5):
+                s += str(self.squares[i][j])
+            s += '|'
+            print(s)
+        print('+--+--+--+--+--+')
+
 
 
     def get_square(self, row, col):
@@ -148,8 +146,8 @@ class Action:
     def get_new_coords(self):
         curr_row = self.worker.row
         curr_col = self.worker.col
-        new_row = curr_row + directions.get(self.direction[0])
-        new_col = curr_col + directions.get(self.direction[1])
+        new_row = curr_row + directions.get(self.direction)[0]
+        new_col = curr_col + directions.get(self.direction)[1]
         return [new_row, new_col]
 
 

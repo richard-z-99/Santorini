@@ -84,19 +84,19 @@ class PlayGame:
 
     def undo(self):
         self.memento.undo()
-        self.board = self.memento.history[self.memento.cur_board]
+        self.update_board()
 
     def redo(self):
         self.memento.redo()
-        self.board = self.memento.history[self.memento.cur_board]
-        
+        self.update_board()
+
     
     def run(self):
         pass
     
     #returns true if action stays on board and new square is unoccupied
     def check_board(self, action):
-        self.board = self.memento.history[self.memento.cur_board]
+        self.update_board()
         new_row = action.get_new_coords()[0]
         new_col = action.get_new_coords()[1]
 
@@ -110,7 +110,7 @@ class PlayGame:
 
     #checks if move is valid
     def check_move(self, move):
-        self.board = self.memento.history[self.memento.cur_board]
+        self.update_board()
         if(not self.check_board(move)):
             return False
 
@@ -126,7 +126,7 @@ class PlayGame:
 
     def execute(self, move):
         #save a copy of current board before doing anything else
-        self.board = self.memento.history[self.memento.cur_board]
+        self.update_board()
         old_board_copy = copy.deepcopy(self.board)
 
         old_row = move.worker.row
@@ -151,5 +151,9 @@ class PlayGame:
 
         #add new board to memento and update self.board
         self.memento.next(new_board)
+        self.update_board()
+
+
+    def update_board(self):
         self.board = self.memento.history[self.memento.cur_board]
         

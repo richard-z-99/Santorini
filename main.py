@@ -15,6 +15,13 @@ directions = {
 
 class Memento:
     def __init__(self):
+        #initialize default board
+        board = Board("white")
+        board.get_square(3,1).occupant = board.white_player.worker1
+        board.get_square(1,3).occupant = board.white_player.worker2
+        board.get_square(1,1).occupant = board.blue_player.worker1
+        board.get_square(3,3).occupant = board.blue_player.worker2
+
         self.history = [Board("white")]
         self.cur_board = 0
     
@@ -69,7 +76,7 @@ class RunHuman:
 class PlayGame:
     def __init__(self):
         self.memento = Memento()
-        self.board = self.memento.board
+        self.board = self.memento.history[self.memento.cur_board]
     
     def run(self):
         pass

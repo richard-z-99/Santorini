@@ -95,14 +95,34 @@ class PlayGame:
     
     def run(self):
         pass
+    
+    
+    def get_legal_moves(self, player):
+        workers = [player.worker1, player.worker2]
+        legal_moves = []
+
+        for d in directions.keys():
+            for w in workers:
+                move = Move(w, d)
+                if self.check_move(move):
+                    legal_moves.append(move)
+
+        return legal_moves
 
 
-    def get_legal_moves(self):
-        pass
 
+    def get_legal_builds(self, player):
+        workers = [player.worker1, player.worker2]
+        legal_moves = []
+        
+        for d in directions.keys():
+            for w in workers:
+                build = Build(w, d)
+                if self.check_build(build):
+                    legal_moves.append(build)
 
-    def get_legal_builds(self):
-        pass
+        return legal_moves
+
     
 
 

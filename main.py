@@ -42,6 +42,7 @@ class Memento:
 
 
 
+
 class RunHuman:
     #outputs instructions for human player, reads input, and executes corresponding move
     def run(self, game):
@@ -80,6 +81,11 @@ class PlayGame:
         self.board = self.memento.history[self.memento.cur_board]
 
 
+    def print_curr_board(self):
+        self.board.print_board()
+        #print("TODO: print turn/player information")
+
+
     def undo(self):
         self.memento.undo()
         self.update_board()
@@ -91,44 +97,48 @@ class PlayGame:
     
     def run(self):
         pass
+
+
+    def get_legal_moves(self):
+        pass
+
+
+    def get_legal_builds(self):
+        pass
     
-    #returns true if action stays on board, new square is unoccupied, and not moving to level 4 square.
+
+
+     #returns true if action stays on board, new square is unoccupied, and not moving to level 4 square.
     def check_board(self, action):
         self.update_board()
         new_row = action.get_new_coords()[0]
         new_col = action.get_new_coords()[1]
 
-        if (0 <= new_row < 5 and 0 <= new_col < 5 and self.board.get_square(new_row, new_col).level < 4):
+        if (0 <= new_row < 5 and 0 <= new_col < 5):
             occupant = self.board.get_square(new_row, new_col).occupant
-            if (occupant is None):
+            level = self.board.get_square(new_row, new_col).level
+            
+            if (occupant is None and level < 4):
                 return True
             else:
-                print("Cannot move {}".format(action.direction))
+                #print("Cannot move {}".format(action.direction))
                 return False
         else:
-            print("Cannot move {}".format(action.direction))
+            #print("Cannot move {}".format(action.direction))
             return False
 
+
+
     #returns true if action stays on board, new square is unoccupied, and not building on level 4 square.
-    def check_build(self, action):
-        self.update_board()
-        new_row = action.get_new_coords()[0]
-        new_col = action.get_new_coords()[1]
-        if (0 <= new_row < 5 and 0 <= new_col < 5 and self.board.get_square(new_row, new_col).level < 4):
-            occupant = self.board.get_square(new_row, new_col).occupant
-            if (occupant is None):
-                return True
-            else:
-                print("Cannot build {}".format(action.direction))
-                return False
-        else:
-            print("Cannot build {}".format(action.direction))
+    def check_build(self, build):
+        if(not self.check_board(build)):
             return False
+
 
 
     #checks if move is valid
     def check_move(self, move):
-        self.update_board()
+        #self.update_board()
         if(not self.check_board(move)):
             return False
 
@@ -143,34 +153,20 @@ class PlayGame:
 
 
 
-    #executes a move then a build, saves everything to memento
-    def execute_turn(self, move, build):
-        #save copy of old board
-        self.update_board()
-        old_board_copy = copy.deepcopy(self.board)
-
-        #perform move/build
-        self.execute_move(move)
-        self.execute_build(build)
-
-        #update memento
-        #new_board = copy.deepcopy(self.board)
-        self.memento.history[self.memento.cur_board] = old_board_copy
-        #self.memento.next(new_board)
-        self.memento.next(self.board)
-        self.update_board()
-
-
-
 
 
     def execute_move(self, move):
+        #make copy of old board and put into memento
+        self.update_board()
+        old_board_copy = copy.deepcopy(self.board)
+        self.memento.history[self.memento.cur_board] = old_board_copy
+
+        #update location of worker
         old_row = move.worker.row
         old_col = move.worker.col
         new_row = move.get_new_coords()[0]
         new_col = move.get_new_coords()[1]
 
-        #update location of worker
         move.worker.update_location(new_row, new_col)
 
         #update occupancy status of old/new squares
@@ -181,6 +177,8 @@ class PlayGame:
         new_square.update_occupant(move.worker)
 
 
+
+
     def execute_build(self, build):
         new_row = build.get_new_coords()[0]
         new_col = build.get_new_coords()[1]
@@ -189,6 +187,10 @@ class PlayGame:
         #in main, need to check if valid build (not building above level 4)
         new_square = self.board.get_square(new_row, new_col)
         new_square.update_level()
+
+        #update memento
+        self.memento.next(self.board)
+        self.update_board()
 
 
 

@@ -123,11 +123,12 @@ class Board:
         while i < 5:
             print('+--+--+--+--+--+')
             i+=1
+            s = ""
             while j < 5:
-                self.squares[i][j]
+                s += str(self.squares[i][j])
                 j+=1
-            if j == 5:
-                print('|')
+            s += '|'
+            print(s)
         print('+--+--+--+--+--+')
         
         

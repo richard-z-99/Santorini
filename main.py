@@ -46,7 +46,9 @@ class RunHuman:
     #outputs instructions for human player, reads input, and executes corresponding move
     def run(self, game):
         player = game.board.curr_player
+
         #TODO: loop until valid name inputted
+
         worker_name = input("Select a worker to move\n>")
         if(worker_name == player.worker1.name): 
             worker = player.worker1
@@ -56,10 +58,11 @@ class RunHuman:
 
 
         #TODO: Error checking on move_direction, actually moving worker
+        
         move_dir = input("Select a direction to move {}\n".format(directions.keys()))
         move = Move(worker, move_dir)
         if(game.check_move(move)):
-            game.execute(move)
+            game.execute_move(move)
 
 
         #TODO: implement build 
@@ -119,7 +122,7 @@ class PlayGame:
         return (new_level < 4 and new_level-old_level <= 1)
 
 
-    def execute(self, move):
+    def execute_move(self, move):
         #save a copy of current board before doing anything else
         self.update_board()
         old_board_copy = copy.deepcopy(self.board)

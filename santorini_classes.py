@@ -128,6 +128,10 @@ class Board:
             if j == 5:
                 print('|')
         print('+--+--+--+--+--+')
+        
+        
+    def get_square(self, row, col):
+        return self.squares[row][col]
 
 
 

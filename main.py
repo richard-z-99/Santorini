@@ -99,8 +99,9 @@ class PlayGame:
         new_col = action.get_new_coords()[1]
 
         if (0 <= new_row < 5 and 0 <= new_col < 5):
+            level = self.board.get_square(new_row, new_col).level
             occupant = self.board.get_square(new_row, new_col).occupant
-            return (occupant is None)
+            return (occupant is None and level < 4)
 
         else:
             return False
@@ -122,11 +123,29 @@ class PlayGame:
         return (new_level < 4 and new_level-old_level <= 1)
 
 
-    def execute_move(self, move):
-        #save a copy of current board before doing anything else
+
+    #executes a move then a build, saves everything to memento
+    def execute_turn(self, move, build):
+        #save copy of old board
         self.update_board()
         old_board_copy = copy.deepcopy(self.board)
 
+        #perform move/build
+        self.execute_move(move)
+        self.execute_build(build)
+
+        #update memento
+        #new_board = copy.deepcopy(self.board)
+        self.memento.history[self.memento.cur_board] = old_board_copy
+        #self.memento.next(new_board)
+        self.memento.next(self.board)
+        self.update_board()
+
+
+
+
+
+    def execute_move(self, move):
         old_row = move.worker.row
         old_col = move.worker.col
         new_row = move.get_new_coords()[0]
@@ -142,28 +161,8 @@ class PlayGame:
         new_square = self.board.get_square(new_row, new_col)
         new_square.update_occupant(move.worker)
 
-        new_board = copy.deepcopy(self.board)
-
-        #put old board copy into memento
-        self.memento.history[self.memento.cur_board] = old_board_copy
-
-        #add new board to memento and update self.board
-        self.memento.next(new_board)
-        self.update_board()
-        
-    def check_build(self, build):
-        
 
     def execute_build(self, build):
-        #old_square is square that worker just moved into.
-        #confusing b/c when undo/redo, move AND build have to change.
-
-        #save a copy of current board before doing anything else
-        self.update_board()
-        old_board_copy = copy.deepcopy(self.board)
-
-        old_row = build.worker.row
-        old_col = build.worker.col
         new_row = build.get_new_coords()[0]
         new_col = build.get_new_coords()[1]
 
@@ -172,15 +171,7 @@ class PlayGame:
         new_square = self.board.get_square(new_row, new_col)
         new_square.update_level()
 
-        #copy of board w/ changed level
-        new_board = copy.deepcopy(self.board)
 
-        #put old board copy into memento
-        self.memento.history[self.memento.cur_board] = old_board_copy
-
-        #add new board to memento and update self.board
-        self.memento.next(new_board)
-        self.update_board()
 
     def update_board(self):
         self.board = self.memento.history[self.memento.cur_board]

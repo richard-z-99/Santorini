@@ -95,13 +95,11 @@ class Square:
             return '|{}{}'.format(self.level, self.occupant)
 
 
-
 class Board:
     def __init__(self, color):
         self.squares = self.create_board()
-        self.memento = Memento()
-        self.white_player = Player(self.memento, "white", self)
-        self.blue_player = Player(self.memento, "blue", self)
+        self.white_player = Player("white")
+        self.blue_player = Player("blue")
         self.color = color
         if self.color == "white":
             self.curr_player = self.white_player
@@ -131,47 +129,16 @@ class Board:
                 print('|')
         print('+--+--+--+--+--+')
 
-    def execute_move(self, move):
-        pass
 
 
 
 class Action:
-    def __init__(self, board, direction, worker):
+    def __init__(self, direction, worker):
         self.direction = direction
         self.worker = worker
-
-    # def check_board(self):
-    #     new_square = self.new_square
-    #     if(new_square is None):
-    #         return False
-
-    #     elif(not new_square.occupant is None):
-    #         return False
-
-    #     else:
-    #         return True
-
-
-    # def new_square(self):
-    #     cur_square = self.worker.location
-    #     coord_change = directions.get(self.direction)
-    #     new_row = cur_square.row + coord_change[0]
-    #     new_col = cur_square.col + coord_change[1]
-
-    #     if(0 <= new_row < 5 and 0 <= new_col < 5):
-    #         return self.board.squares[new_row][new_col]
-
-    #     else:
-    #         return None
-
 
 
 
 class Move(Action):
-    def __init__(self, board, direction, worker):
-        super().__init__(board, direction, worker)
-
-    def execute(self):
-        #passing in self Move object
-        self.board.execute_move(self)
+    def __init__(self, direction, worker):
+        super().__init__(direction, worker)

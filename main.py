@@ -1,4 +1,5 @@
 from santorini_classes import Board, Action, Move
+import copy
 
 
 directions = { 
@@ -76,15 +77,28 @@ class RunHuman:
 class PlayGame:
     def __init__(self):
         self.memento = Memento()
+
+        #keeps track of most current board
         self.board = self.memento.history[self.memento.cur_board]
+
+
+    def undo(self):
+        self.memento.undo()
+        self.board = self.memento.history[self.memento.cur_board]
+
+    def redo(self):
+        self.memento.redo()
+        self.board = self.memento.history[self.memento.cur_board]
+        
     
     def run(self):
         pass
     
     #returns true if action stays on board and new square is unoccupied
     def check_board(self, action):
-        new_row = action.get_new_coords[0]
-        new_col = action.get_new_coords[1]
+        self.board = self.memento.history[self.memento.cur_board]
+        new_row = action.get_new_coords()[0]
+        new_col = action.get_new_coords()[1]
 
         if (0 <= new_row < 5 and 0 <= new_col < 5):
             occupant = self.board.get_square(new_row, new_col).occupant
@@ -96,21 +110,29 @@ class PlayGame:
 
     #checks if move is valid
     def check_move(self, move):
-        new_row = move.get_new_coords[0]
-        new_col = move.get_new_coords[1]
+        self.board = self.memento.history[self.memento.cur_board]
+        if(not self.check_board(move)):
+            return False
+
+        new_row = move.get_new_coords()[0]
+        new_col = move.get_new_coords()[1]
         old_row = move.worker.row
         old_col = move.worker.col
         
         old_level = self.board.get_square(old_row, old_col).level
         new_level = self.board.get_square(new_row, new_col).level
-        return (self.check_board(move) and  new_level < 4 and new_level-old_level <= 1)
+        return (new_level < 4 and new_level-old_level <= 1)
 
 
     def execute(self, move):
+        #save a copy of current board before doing anything else
+        self.board = self.memento.history[self.memento.cur_board]
+        old_board_copy = copy.deepcopy(self.board)
+
         old_row = move.worker.row
         old_col = move.worker.col
-        new_row = move.get_new_coords[0]
-        new_col = move.get_new_coords[1]
+        new_row = move.get_new_coords()[0]
+        new_col = move.get_new_coords()[1]
 
         #update location of worker
         move.worker.update_location(new_row, new_col)
@@ -121,3 +143,13 @@ class PlayGame:
 
         new_square = self.board.get_square(new_row, new_col)
         new_square.update_occupant(move.worker)
+
+        new_board = copy.deepcopy(self.board)
+
+        #put old board copy into memento
+        self.memento.history[self.memento.cur_board] = old_board_copy
+
+        #add new board to memento and update self.board
+        self.memento.next(new_board)
+        self.board = self.memento.history[self.memento.cur_board]
+        

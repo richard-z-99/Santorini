@@ -36,44 +36,36 @@ class Human(Player):
 
 
 class Worker:
-    def __init__(self, player, name):
-        self.player = player
+    def __init__(self, name, row, col):
         self.name = name
-        self.board = player.board
+        self.row = row
+        self.col = col
         
         #initialize worker to default location depending on name
         if(self.name == 'A'):
-            self.update_location(self.board.squares[1][3])
+            self.update_location(1, 3)
         
         elif(self.name == 'B'):
-            self.update_location(self.board.squares[3][1])
+            self.update_location(3, 1)
 
         elif(self.name == 'Y'):
-            self.update_location(self.board.squares[1][1])
+            self.update_location(1, 1)
 
         elif(self.name == 'Z'):
-            self.update_location(self.board.squares[3][3])
+            self.update_location(3, 3)
 
         else:
             print("ERROR: Invalid worker name")
 
-
     def find_legal_moves(self):
         return self.board.find_legal_moves(self)
-
 
     def find_legal_builds(self):
         return self.board.find_legal_builds(self)
 
-
-    def update_location(self, new_square):
-        self.location = new_square
-        new_square.update_occupant(self)
-
-
-
-
-
+    def update_location(self, new_row, new_col):
+        self.row = new_row
+        self.col = new_col
 
 class Square:
     def __init__(self, row, col):
@@ -82,17 +74,26 @@ class Square:
         self.occupant = None
         self.level = 0
 
-    def update_occupant(self):
-        pass
+    def update_occupant(self, new_occupant = None):
+        #if move into square, update occupant. if more out of square, occupant = None.
+        if new_occupant is None:
+            self.occupant = None
+        else:
+            self.occupant = new_occupant
 
     def update_level(self):
-        pass
+        #if level < 4, build up 1 level.
+        if self.level < 4:
+            self.level += 1
+        # else:
+        #     print("Cannot build {}".format(self.direction))
 
     def __str__(self):
         if (self.occupant == None):
             return '|{} '.format(self.level)
         else:
             return '|{}{}'.format(self.level, self.occupant)
+
 
 
 class Board:

@@ -9,19 +9,18 @@ directions = {
     'nw': (-1, -1)
     }
 
+
 class Player:
-    def __init__(self, memento, color, board):
-        self.memento = memento
+    def __init__(self, color):
         self.color = color
-        self.board = board
 
         if(self.color == 'white'):
-            self.worker1 = Worker(self, 'A')
-            self.worker2 = Worker(self, 'B')
+            self.worker1 = Worker('A')
+            self.worker2 = Worker('B')
 
         elif(self.color == 'blue'):
-            self.worker1 = Worker(self, 'Y')
-            self.worker2 = Worker(self, 'Z')
+            self.worker1 = Worker('Y')
+            self.worker2 = Worker('Z')
 
         else:
             print("ERROR: Invalid player name")
@@ -30,13 +29,13 @@ class Player:
 
 
 class Human(Player):
-    def __init__(self, memento, color, board):
-        super().__init__(memento, color, board)
+    def __init__(self, color):
+        super().__init__(color)
 
 
 
 class Worker:
-    def __init__(self, name, row, col):
+    def __init__(self, name, row=0, col=0):
         self.name = name
         self.row = row
         self.col = col
@@ -66,6 +65,8 @@ class Worker:
     def update_location(self, new_row, new_col):
         self.row = new_row
         self.col = new_col
+
+
 
 class Square:
     def __init__(self, row, col):
@@ -98,9 +99,9 @@ class Square:
 
 class Board:
     def __init__(self, color):
-        self.squares = self.create_board()
         self.white_player = Player("white")
         self.blue_player = Player("blue")
+        self.squares = self.create_board()
         self.color = color
         if self.color == "white":
             self.curr_player = self.white_player
@@ -115,6 +116,7 @@ class Board:
             for col in range(5):
                 new_row.append(Square(row, col))
                 board.append(new_row)
+                
         return board
 
     def print_board(self):
@@ -130,11 +132,10 @@ class Board:
             s += '|'
             print(s)
         print('+--+--+--+--+--+')
-        
-        
+
+
     def get_square(self, row, col):
         return self.squares[row][col]
-
 
 
 
@@ -142,6 +143,13 @@ class Action:
     def __init__(self, direction, worker):
         self.direction = direction
         self.worker = worker
+
+    def get_new_coords(self):
+        curr_row = self.worker.row
+        curr_col = self.worker.col
+        new_row = curr_row + directions.get(self.direction[0])
+        new_col = curr_col + directions.get(self.direction[1])
+        return [new_row, new_col]
 
 
 

@@ -33,6 +33,13 @@ class Human(Player):
         super().__init__(color)
 
 
+class Random(Player):
+    def __init__(self, color):
+        super().__init__(color)
+
+    
+
+
 
 class Worker:
     def __init__(self, name, row=4, col=3):
@@ -153,5 +160,10 @@ class Action:
 
 
 class Move(Action):
+    def __init__(self, direction, worker):
+        super().__init__(direction, worker)
+
+
+class Build(Action):
     def __init__(self, direction, worker):
         super().__init__(direction, worker)

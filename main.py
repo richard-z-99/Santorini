@@ -92,18 +92,37 @@ class PlayGame:
     def run(self):
         pass
     
-    #returns true if action stays on board and new square is unoccupied
+    #returns true if action stays on board, new square is unoccupied, and not moving to level 4 square.
     def check_board(self, action):
         self.update_board()
         new_row = action.get_new_coords()[0]
         new_col = action.get_new_coords()[1]
 
-        if (0 <= new_row < 5 and 0 <= new_col < 5):
-            level = self.board.get_square(new_row, new_col).level
+        if (0 <= new_row < 5 and 0 <= new_col < 5 and self.board.get_square(new_row, new_col).level < 4):
             occupant = self.board.get_square(new_row, new_col).occupant
-            return (occupant is None and level < 4)
-
+            if (occupant is None):
+                return True
+            else:
+                print("Cannot move {}".format(action.direction))
+                return False
         else:
+            print("Cannot move {}".format(action.direction))
+            return False
+
+    #returns true if action stays on board, new square is unoccupied, and not building on level 4 square.
+    def check_build(self, action):
+        self.update_board()
+        new_row = action.get_new_coords()[0]
+        new_col = action.get_new_coords()[1]
+        if (0 <= new_row < 5 and 0 <= new_col < 5 and self.board.get_square(new_row, new_col).level < 4):
+            occupant = self.board.get_square(new_row, new_col).occupant
+            if (occupant is None):
+                return True
+            else:
+                print("Cannot build {}".format(action.direction))
+                return False
+        else:
+            print("Cannot build {}".format(action.direction))
             return False
 
 

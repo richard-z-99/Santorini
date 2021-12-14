@@ -10,36 +10,6 @@ directions = {
     }
 
 
-class Player:
-    def __init__(self, color):
-        self.color = color
-
-        if(self.color == 'white'):
-            self.worker1 = Worker('A')
-            self.worker2 = Worker('B')
-
-        elif(self.color == 'blue'):
-            self.worker1 = Worker('Y')
-            self.worker2 = Worker('Z')
-
-        else:
-            print("ERROR: Invalid player name")
-
-
-
-
-class Human(Player):
-    def __init__(self, color):
-        super().__init__(color)
-
-
-class Random(Player):
-    def __init__(self, color):
-        super().__init__(color)
-
-    
-
-
 
 class Worker:
     def __init__(self, name, row=4, col=3):
@@ -102,12 +72,51 @@ class Square:
         else:
             return '|{}{}'.format(self.level, self.occupant.name)
 
+class Player:
+    def __init__(self, color):
+        self.color = color
 
+        if(self.color == 'white'):
+            self.worker1 = Worker('A')
+            self.worker2 = Worker('B')
+
+        elif(self.color == 'blue'):
+            self.worker1 = Worker('Y')
+            self.worker2 = Worker('Z')
+
+        else:
+            print("ERROR: Invalid player name")
+
+# class Human(Player):
+#     def __init__(self, color):
+#         super().__init__(color)
+
+class PlayerFactory():
+    def create_player(self, kind, color):
+        if (kind == "human"):
+            return HumanPlayer(color)
+        if (kind == "random"):
+            return RandomPlayer(color)
+        if (kind == "heuristic"):
+            return HeuristicPlayer(color)
+
+class HumanPlayer(Player):
+    def __init__(self, color):
+        super().__init__(color)
+    
+class RandomPlayer(Player):
+    def __init__(self, color):
+        super().__init__(color)
+
+class HeuristicPlayer(Player):
+    def __init__(self, color):
+        super().__init__(color)
 
 class Board:
-    def __init__(self, color):
-        self.white_player = Player("white")
-        self.blue_player = Player("blue")
+    def __init__(self, kind1, kind2, color):
+        self.player_factory = PlayerFactory()
+        self.white_player = self.player_factory.create_player(kind1, "white")
+        self.blue_player = self.player_factory.create_player(kind2, "blue")
         self.squares = self.create_board()
         self.color = color
         if self.color == "white":

@@ -89,10 +89,6 @@ class Player:
         else:
             print("ERROR: Invalid player name")
 
-# class Human(Player):
-#     def __init__(self, color):
-#         super().__init__(color)
-
 class PlayerFactory():
     def create_player(self, kind, color):
         if (kind == "human"):
@@ -106,7 +102,7 @@ class HumanPlayer(Player):
     def __init__(self, color):
         super().__init__(color)
     
-class Random(Player):
+class RandomPlayer(Player):
     def __init__(self, color):
         super().__init__(color)
 

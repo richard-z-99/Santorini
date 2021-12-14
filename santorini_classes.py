@@ -119,19 +119,32 @@ class Board:
                 
         return board
 
-    def print_board(self):
+def print_board(self):
         i = 0
         j = 0
-        while i < 5:
+
+        for i in range(5):
             print('+--+--+--+--+--+')
-            i+=1
-            s = ""
-            while j < 5:
+            i += 1
+            s=""
+            for j in range(5):
                 s += str(self.squares[i][j])
-                j+=1
+                j += 1
             s += '|'
             print(s)
         print('+--+--+--+--+--+')
+
+        # while i < 5:
+        #     print('+--+--+--+--+--+')
+        #     i+=1
+        #     s = ""
+        #     while j < 5:
+        #         s += str(self.squares[i][j])
+        #         j+=1
+        #     s += '|'
+        #     print(s)
+        # print('+--+--+--+--+--+')
+
 
 
     def get_square(self, row, col):

@@ -24,13 +24,13 @@ class Board:
         return board
 
 
-    def get_legal_moves(self):
-        workers = [self.curr_player.worker1, self.curr_player.worker2]
+    def get_legal_moves(self, player):
+        workers = [player.worker1, player.worker2]
         legal_moves = []
 
         for d in directions.keys():
             for w in workers:
-                move = Move(w, d)
+                move = Move(d, w)
                 if self.check_move(move):
                     legal_moves.append(move)
 
@@ -43,7 +43,7 @@ class Board:
         
         for d in directions.keys():
             for w in workers:
-                build = Build(w, d)
+                build = Build(d, w)
                 if self.check_build(build):
                     legal_moves.append(build)
 

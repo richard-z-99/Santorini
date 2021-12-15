@@ -213,7 +213,84 @@ class Board:
         old_level = self.get_square(old_row, old_col).level
         new_level = self.get_square(new_row, new_col).level
         return (new_level < 4 and new_level-old_level <= 1)
+
     
+    def check_won(self, player):
+        level1 = self.get_square(player.worker1.row, player.worker1.col).level
+        level2 = self.get_square(player.worker2.row, player.worker2.col).level
+        return (level1 == 3 or level2 == 3)
+
+
+
+
+    #calculate distance between two squares
+    def square_dist(self, square1, square2):
+        row_dist = abs(square1.row - square2.row)
+        col_dist = abs(square1.col - square2.col)
+        return min(row_dist, col_dist) + abs(row_dist - col_dist)
+
+
+    #calculate distance between two workers
+    def worker_dist(self, worker1, worker2):
+        square1 = self.get_square(worker1.row, worker1.col)
+        square2 = self.get_square(worker2.row, worker2.col)
+        return self.square_dist(square1, square2)
+
+
+    #calculate height score of player in given position
+    def height_score(self, player):
+        level1 = self.get_square(player.worker1.row, player.worker1.col).level
+        level2 = self.get_square(player.worker2.row, player.worker2.col).level
+        return level1 + level2
+
+
+    #calculate center score of player in given position
+    def center_score(self, player):
+        center_square = self.get_square(2,2)
+        square1 = self.get_square(player.worker1.row, player.worker1.col)
+        square2 = self.get_square(player.worker2.row, player.worker2.col)
+
+        d1 = self.square_dist(square1, center_square)
+        d2 = self.square_dist(square2, center_square)
+
+        d1 = max(2-d1, 0)
+        d2 = max(2-d2, 0)
+
+        return d1+d2
+
+
+    #calculate the distance score of player in given position
+    def distance_score(self, player):
+        opponent = self.get_opponent(player)
+
+        #dij = distance from player.workeri to opponent.workerj
+        d11 = self.worker_dist(player.worker1, opponent.worker1)
+        d21 = self.worker_dist(player.worker2, opponent.worker1)
+        d12 = self.worker_dist(player.worker1, opponent.worker2)
+        d22 = self.worker_dist(player.worker2, opponent.worker2)
+
+        return 9 - (min(d11, d21) + min(d12, d22))
+
+
+    def score(self, player):
+        c1, c2, c3 = 3, 2, 1
+        return c1*self.height_score(player) + c2*self.center_score(player) + c3*self.distance_score(player)
+        
+
+
+    #returns the opponent of the input player
+    def get_opponent(self, player):
+        if(player == self.white_player):
+            return self.blue_player
+        elif(player == self.blue_player):
+            return self.white_player
+        else:
+            print("Invalid player!")
+
+
+    def switch_player(self):
+        self.curr_player = self.get_opponent(self.curr_player)    
+
 
     def print_board(self):
         for i in range(5):

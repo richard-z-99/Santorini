@@ -1,5 +1,16 @@
 from santorini_classes import*
 
+opp_directions = { 
+    'n': 's', 
+    'ne': 'sw', 
+    'e': 'w', 
+    'se': 'nw', 
+    's': 'n', 
+    'sw': 'ne', 
+    'w': 'e', 
+    'nw': 'se'
+    }
+
 class Board:
     def __init__(self, kind1, kind2, color):
         self.player_factory = PlayerFactory()
@@ -39,15 +50,16 @@ class Board:
 
     def get_legal_builds(self, player):
         workers = [player.worker1, player.worker2]
-        legal_moves = []
+        legal_builds = []
         
         for d in directions.keys():
             for w in workers:
                 build = Build(d, w)
                 if self.check_build(build):
-                    legal_moves.append(build)
+                    #print("bop")
+                    legal_builds.append(build)
 
-        return legal_moves
+        return legal_builds
 
 
 
@@ -74,8 +86,7 @@ class Board:
 
     #returns true if action stays on board, new square is unoccupied, and not building on level 4 square.
     def check_build(self, build):
-        if(not self.check_board(build)):
-            return False
+        return self.check_board
 
 
 
@@ -149,14 +160,49 @@ class Board:
         d12 = self.worker_dist(player.worker1, opponent.worker2)
         d22 = self.worker_dist(player.worker2, opponent.worker2)
 
-        return 9 - (min(d11, d21) + min(d12, d22))
+        return 8 - (min(d11, d21) + min(d12, d22))
 
-
-    def score(self, player):
+    #calculate the total heuristic score of current player
+    def score(self):
         c1, c2, c3 = 3, 2, 1
+        player = self.curr_player
         return c1*self.height_score(player) + c2*self.center_score(player) + c3*self.distance_score(player)
 
 
+    #evalutes what the score would be after making the given move
+    def get_move_score(self, move):
+        self.execute_move(move)
+        score = self.score()
+        self.undo_move(move)
+        return score
+
+    #return move with best score
+    def get_best_move(self):
+        move_scores = {}
+        for move in self.get_legal_moves(self.curr_player):
+            move_scores[move] = self.get_move_score(move)
+
+        return max(move_scores, key=move_scores.get)
+
+    
+    #same as above but with build
+    def get_build_score(self, build):
+        self.execute_build(build)
+        score = self.score()
+        self.undo_build(build)
+        return score
+
+
+    #return build with best score
+    def get_best_build(self):
+        build_scores = {}
+        for build in self.get_legal_builds(self.curr_player):
+            build_scores[build] = self.get_build_score(build)
+
+        return max(build_scores, key=build_scores.get)
+
+
+    #updates board state given move
     def execute_move(self, move):
         old_row = move.worker.row
         old_col = move.worker.col
@@ -173,13 +219,34 @@ class Board:
         new_square.update_occupant(move.worker)
 
 
+    #moves in opposite direction of given move
+    def undo_move(self, move):
+        opp_direction = opp_directions.get(move.direction)
+        reverse_move = Move(opp_direction, move.worker)
+        self.execute_move(reverse_move)
+
+
+
+    #updates board state given build
     def execute_build(self, build):
         new_row = build.get_new_coords()[0]
         new_col = build.get_new_coords()[1]
 
         #update level of new_square
-        new_square = self.board.get_square(new_row, new_col)
+        new_square = self.get_square(new_row, new_col)
         new_square.update_level()
+        self.switch_player()
+
+
+    #decrements height of building where the given build object would build
+    def undo_build(self, build):
+        new_row = build.get_new_coords()[0]
+        new_col = build.get_new_coords()[1]
+
+        #update level of new_square
+        new_square = self.get_square(new_row, new_col)
+        new_square.level -= 1
+        self.switch_player()
         
 
 

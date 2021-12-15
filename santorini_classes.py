@@ -54,7 +54,7 @@ class HumanPlayer(Player):
     #returns chosen worker of curr player
     def choose_worker(self):
         while True:
-            worker_name = input("Select a worker to move\n>")
+            worker_name = input("Select a worker to move\n")
             if(worker_name == self.worker1.name): 
                 worker = self.worker1
                 return worker

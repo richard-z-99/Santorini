@@ -97,7 +97,15 @@ class PlayGame:
 
     
     def run(self):
-        pass
+            self.print_curr_board()
+            curr_worker = self.board.curr_player.choose_worker()
+            legal_moves = self.board.get_legal_moves(self.board.curr_player)
+            move = self.board.curr_player.choose_move(legal_moves, curr_worker)
+            self.execute_move(move)
+            legal_builds = self.board.get_legal_builds(self.board.curr_player)
+            build = self.board.curr_player.choose_build(legal_builds, curr_worker)
+            self.execute_build(build)
+            #change curr_player, iterate turn =+1. Can implement in execute_build
     
     
 

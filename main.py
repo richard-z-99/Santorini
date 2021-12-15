@@ -1,4 +1,5 @@
-from santorini_classes import Board, Action, Build, Move
+from santorini_classes import Action, Build, Move
+from board import Board
 import copy
 import sys
 
@@ -37,6 +38,8 @@ class Memento:
         self.history[:self.cur_board+1]
         self.history.append(new_board)
         self.cur_board += 1
+
+
 
 class RunHuman:
     #outputs instructions for human player, reads input, and executes corresponding move
@@ -105,32 +108,36 @@ class PlayGame:
         old_board_copy = copy.deepcopy(self.board)
         self.memento.history[self.memento.cur_board] = old_board_copy
 
-        #update location of worker
-        old_row = move.worker.row
-        old_col = move.worker.col
-        new_row = move.get_new_coords()[0]
-        new_col = move.get_new_coords()[1]
+        self.board.execute_move(move)
 
-        move.worker.update_location(new_row, new_col)
+        # #update location of worker
+        # old_row = move.worker.row
+        # old_col = move.worker.col
+        # new_row = move.get_new_coords()[0]
+        # new_col = move.get_new_coords()[1]
 
-        #update occupancy status of old/new squares
-        old_square = self.board.get_square(old_row, old_col)
-        old_square.update_occupant(None)
+        # move.worker.update_location(new_row, new_col)
 
-        new_square = self.board.get_square(new_row, new_col)
-        new_square.update_occupant(move.worker)
+        # #update occupancy status of old/new squares
+        # old_square = self.board.get_square(old_row, old_col)
+        # old_square.update_occupant(None)
+
+        # new_square = self.board.get_square(new_row, new_col)
+        # new_square.update_occupant(move.worker)
 
 
 
 
     def execute_build(self, build):
-        new_row = build.get_new_coords()[0]
-        new_col = build.get_new_coords()[1]
+        # new_row = build.get_new_coords()[0]
+        # new_col = build.get_new_coords()[1]
 
-        #update level of new_square
-        #in main, need to check if valid build (not building above level 4)
-        new_square = self.board.get_square(new_row, new_col)
-        new_square.update_level()
+        # #update level of new_square
+        # #in main, need to check if valid build (not building above level 4)
+        # new_square = self.board.get_square(new_row, new_col)
+        # new_square.update_level()
+
+        self.board.execute_build(build)
 
         #update memento
         self.memento.next(self.board)
@@ -147,4 +154,3 @@ class PlayGame:
 
 #     game1 = PlayGame(kind1, kind2)
 #     game1.run()
-        

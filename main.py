@@ -1,4 +1,4 @@
-from santorini_classes import Action, Build, Move
+from santorini_classes import Action, Build, HumanPlayer, RandomPlayer, Move
 from board import Board
 import copy
 import sys
@@ -77,6 +77,8 @@ class RunHuman:
 class PlayGame:
     def __init__(self, kind1, kind2):
         self.memento = Memento(kind1, kind2)
+        self.kind1 = kind1
+        self.kind2 = kind2
 
         #keeps track of current board
         self.board = self.memento.history[self.memento.cur_board]
@@ -97,17 +99,32 @@ class PlayGame:
 
     
     def run(self):
-            self.print_curr_board()
-            curr_worker = self.board.curr_player.choose_worker()
-            legal_moves = self.board.get_legal_moves(self.board.curr_player)
-            move = self.board.curr_player.choose_move(legal_moves, curr_worker)
-            self.execute_move(move)
-            legal_builds = self.board.get_legal_builds(self.board.curr_player)
-            build = self.board.curr_player.choose_build(legal_builds, curr_worker)
-            self.execute_build(build)
-            #change curr_player, iterate turn =+1. Can implement in execute_build
-    
-    
+        #change while condition to not_win later
+        while self.board.check_won(self.board.curr_player) is False:
+            if isinstance(self.board.curr_player, HumanPlayer):
+                self.print_curr_board()
+                curr_worker = self.board.curr_player.choose_worker()
+                legal_moves = self.board.get_legal_moves(self.board.curr_player)
+                move = self.board.curr_player.choose_move(legal_moves, curr_worker)
+                self.execute_move(move)
+                legal_builds = self.board.get_legal_builds(self.board.curr_player, move.worker)
+                build = self.board.curr_player.choose_build(legal_builds, curr_worker)
+                self.execute_build(build)
+                self.board.switch_player()
+
+        #if bot
+            else:
+                self.print_curr_board()
+                legal_moves = self.board.get_legal_moves(self.board.curr_player)
+                move = self.board.curr_player.choose_move(legal_moves)
+                self.execute_move(move)
+                legal_builds = self.board.get_legal_builds(self.board.curr_player, move.worker)
+                build = self.board.curr_player.choose_build(legal_builds)
+                self.execute_build(build)
+                self.board.switch_player()
+                print("NEW TURN")
+            #bot choose move will not have curr worker. also choose_build. Curr_worker is just a property of the legal_move that was chosen by the algo
+        #change curr_player, iterate turn =+1. Can implement in execute_build
 
 
     def execute_move(self, move):
@@ -156,9 +173,9 @@ class PlayGame:
     def update_board(self):
         self.board = self.memento.history[self.memento.cur_board]
         
-# if __name__ == "__main__":
-#     kind1 = sys.argv[1]
-#     kind2 = sys.argv[2]
+if __name__ == "__main__":
+    kind1 = sys.argv[1]
+    kind2 = sys.argv[2]
 
-#     game1 = PlayGame(kind1, kind2)
-#     game1.run()
+    game1 = PlayGame(kind1, kind2)
+    game1.run()

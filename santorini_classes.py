@@ -70,11 +70,15 @@ class HumanPlayer(Player):
     def choose_move(self, legal_moves, worker):
         while True:
             move_dir = input("Select a direction to move {}\n".format(directions.keys()))
-            if(move_dir not in directions.keys()):
+            if(not move_dir in directions.keys()):
                 print("Not a valid direction")
             else:
                 move = Move(move_dir, worker)
-                if (move not in legal_moves):
+                valid_move = False
+                for item in legal_moves:
+                    if (item == move):
+                        valid_move = True
+                if not valid_move:
                     print("Cannot move {}".format(move_dir))
                 else:
                     return move
@@ -87,7 +91,11 @@ class HumanPlayer(Player):
                 print("Not a valid direction")
             else:
                 build = Build(build_dir, worker)
-                if (build not in legal_builds):
+                valid_build = False
+                for item in legal_builds:
+                    if item == build:
+                        valid_build = True
+                if not valid_build:
                     print("Cannot build {}".format(build_dir))
                 else:
                     return build
@@ -199,6 +207,8 @@ class Action:
         new_col = curr_col + directions.get(self.direction)[1]
         return [new_row, new_col]
 
+    def __eq__(self, other):
+        return self.direction == other.direction and self.worker.name == other.worker.name
 
 class Move(Action):
     def __init__(self, direction, worker):

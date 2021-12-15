@@ -48,14 +48,16 @@ class Board:
         return legal_moves
 
 
-    def get_legal_builds(self, player):
+    def get_legal_builds(self, player, worker):
         workers = [player.worker1, player.worker2]
         legal_builds = []
         
+        #print("worker location: {}, {}".format(worker.row, worker.col))
+
         for d in directions.keys():
             for w in workers:
                 build = Build(d, w)
-                if self.check_build(build):
+                if self.check_build(build) and w == worker:
                     #print("bop")
                     legal_builds.append(build)
 
@@ -86,7 +88,7 @@ class Board:
 
     #returns true if action stays on board, new square is unoccupied, and not building on level 4 square.
     def check_build(self, build):
-        return self.check_board
+        return self.check_board(build)
 
 
 
@@ -107,25 +109,25 @@ class Board:
 
 
     def check_won(self, player):
-            level1 = self.get_square(player.worker1.row, player.worker1.col).level
-            level2 = self.get_square(player.worker2.row, player.worker2.col).level
+        level1 = self.get_square(player.worker1.row, player.worker1.col).level
+        level2 = self.get_square(player.worker2.row, player.worker2.col).level
 
-            #if curr_player's opponent has no legal moves, curr_player wins
-            #but rather, want to check curr_player has no move, then return opponent win. want this one but above line.
-            opponent = self.get_opponent(player)
-            # print(opponent.color)
-            legal_moves = self.get_legal_moves(player)
-            if len(legal_moves) == 0:
-                print("no moves")
-                print("{} has won".format(opponent.color))
-                return opponent
-            if level1 ==3 or level2 == 3:
-                print("poop")
-                print("{} has won".format(player.color))
-                return player
+        #if curr_player's opponent has no legal moves, curr_player wins
+        #but rather, want to check curr_player has no move, then return opponent win. want this one but above line.
+        opponent = self.get_opponent(player)
+        # print(opponent.color)
+        legal_moves = self.get_legal_moves(player)
+        if len(legal_moves) == 0:
+            print("no moves")
+            print("{} has won".format(opponent.color))
+            return opponent
+        if level1 ==3 or level2 == 3:
+            #print("poop")
+            print("{} has won".format(player.color))
+            return player
 
-            return None
-            # return (level1 == 3 or level2 == 3)
+        return None
+        # return (level1 == 3 or level2 == 3)
 
 
 
@@ -188,17 +190,28 @@ class Board:
     #evalutes what the score would be after making the given move
     def get_move_score(self, move):
         self.execute_move(move)
+        #print("tried move")
         score = self.score()
         self.undo_move(move)
+        #print("undid move")
         return score
 
     #return move with best score
-    def get_best_move(self):
-        move_scores = {}
-        for move in self.get_legal_moves(self.curr_player):
-            move_scores[move] = self.get_move_score(move)
+    def get_best_move(self, legal_moves):
+        if(len(legal_moves) == 0):
+            print("error: no legal moves!")
+            return
+        
+        high_score = -1
+        for move in legal_moves:
+            score = self.get_move_score(move)
+            if score > high_score:
+                best_move = move
+                high_score = score
 
-        return max(move_scores, key=move_scores.get)
+        #print(best_move.worker.name)
+        #print(best_move.direction)
+        return best_move
 
     
     #same as above but with build
@@ -210,12 +223,19 @@ class Board:
 
 
     #return build with best score
-    def get_best_build(self):
-        build_scores = {}
-        for build in self.get_legal_builds(self.curr_player):
-            build_scores[build] = self.get_build_score(build)
+    def get_best_build(self, legal_builds):
+        if(len(legal_builds) == 0):
+            print("error: no legal builds!")
+            return
+        
+        high_score = -1
+        for build in legal_builds:
+            score = self.get_build_score(build)
+            if(score > high_score):
+                high_score = score
+                best_build = build
 
-        return max(build_scores, key=build_scores.get)
+        return best_build
 
 
     #updates board state given move
@@ -251,7 +271,7 @@ class Board:
         #update level of new_square
         new_square = self.get_square(new_row, new_col)
         new_square.update_level()
-        self.switch_player()
+        #self.switch_player()
 
 
     #decrements height of building where the given build object would build

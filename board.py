@@ -107,9 +107,25 @@ class Board:
 
 
     def check_won(self, player):
-        level1 = self.get_square(player.worker1.row, player.worker1.col).level
-        level2 = self.get_square(player.worker2.row, player.worker2.col).level
-        return (level1 == 3 or level2 == 3)
+            level1 = self.get_square(player.worker1.row, player.worker1.col).level
+            level2 = self.get_square(player.worker2.row, player.worker2.col).level
+
+            #if curr_player's opponent has no legal moves, curr_player wins
+            #but rather, want to check curr_player has no move, then return opponent win. want this one but above line.
+            opponent = self.get_opponent(player)
+            # print(opponent.color)
+            legal_moves = self.get_legal_moves(player)
+            if len(legal_moves) == 0:
+                print("no moves")
+                print("{} has won".format(opponent.color))
+                return opponent
+            if level1 ==3 or level2 == 3:
+                print("poop")
+                print("{} has won".format(player.color))
+                return player
+
+            return None
+            # return (level1 == 3 or level2 == 3)
 
 
 

@@ -28,7 +28,9 @@ class Memento:
     
     def undo(self):
         if(self.cur_board > 0):
+            #print("hello")
             self.cur_board -= 1
+            print(self.cur_board)
 
     def redo(self):
         if(self.cur_board < len(self.history)-1):
@@ -51,12 +53,16 @@ class PlayGame:
     def prompt(self):
         options = input("undo, redo, or next\n")
         while options != "next":
-            self.board.print_board()
             if options == "undo":
                 self.undo()
-            if options == "redo":
+                self.board.print_board()
+                print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+            
+            elif options == "redo":
                 self.redo()
-            print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+                self.board.print_board()
+                print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+
             options = input("undo, redo, or next\n")
 
     def print_curr_board(self):

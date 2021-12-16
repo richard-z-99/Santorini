@@ -184,6 +184,8 @@ class Board:
     def score(self):
         c1, c2, c3 = 3, 2, 1
         player = self.curr_player
+        if(self.check_won(player)):
+            return 1000
         return c1*self.height_score(player) + c2*self.center_score(player) + c3*self.distance_score(player)
 
 

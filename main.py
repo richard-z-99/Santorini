@@ -39,52 +39,6 @@ class Memento:
         self.history.append(new_board)
         self.cur_board += 1
 
-    def prompt(self):
-        options = input("undo, redo, or next\n")
-        current_board = self.history[self.cur_board]
-        while options != "next":
-            current_board.print_board()
-            if options == "undo":
-                self.undo()
-            if options == "redo":
-                self.redo()
-            print("Turn: {}, {} ({}{})".format(self.cur_board+1, current_board.curr_player.color, current_board.curr_player.worker1.name, current_board.curr_player.worker2.name))
-            options = input("undo, redo, or next\n")
-
-
-# class RunHuman:
-#     #outputs instructions for human player, reads input, and executes corresponding move
-#     def run(self, game):
-#         player = game.board.curr_player
-
-#         #TODO: loop until valid name inputted
-
-
-#         worker_name = input("Select a worker to move\n>")
-#         if(worker_name == player.worker1.name): 
-#             worker = player.worker1
-
-#         elif(worker_name == player.worker2.name):
-#             worker = player.worker2
-
-
-#         #TODO: Error checking on move_direction, actually moving worker. DONE, i think
-        
-#         move_dir = input("Select a direction to move {}\n".format(directions.keys()))
-#         move = Move(move_dir, worker)
-#         if(game.check_move(move)):
-#             game.execute_move(move)
-
-
-#         #TODO: implement build. DONE, i think
-#         build_dir = input("Select a direction to build {}\n".format(directions.keys()))
-#         build = Build(build_dir, worker)
-#         #no other checks on building besides check_board.
-#         if (game.check_build(build)):
-#             game.execute_build(build)
-
-
-
 class PlayGame:
     def __init__(self, kind1, kind2):
         self.memento = Memento(kind1, kind2)
@@ -94,6 +48,16 @@ class PlayGame:
         #keeps track of current board
         self.board = self.memento.history[self.memento.cur_board]
 
+    def prompt(self):
+        options = input("undo, redo, or next\n")
+        while options != "next":
+            self.board.print_board()
+            if options == "undo":
+                self.undo()
+            if options == "redo":
+                self.redo()
+            print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+            options = input("undo, redo, or next\n")
 
     def print_curr_board(self):
         self.board.print_board()
@@ -119,7 +83,7 @@ class PlayGame:
                 break
             
             if sys.argv[3] == "on":
-                self.memento.prompt()
+                self.prompt()
 
             # if sys.argv[4] == "on":
             #     pass

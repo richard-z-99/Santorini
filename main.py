@@ -28,9 +28,7 @@ class Memento:
     
     def undo(self):
         if(self.cur_board > 0):
-            #print("hello")
             self.cur_board -= 1
-            print(self.cur_board)
 
     def redo(self):
         if(self.cur_board < len(self.history)-1):
@@ -53,15 +51,24 @@ class PlayGame:
     def prompt(self):
         options = input("undo, redo, or next\n")
         while options != "next":
+            output = "Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name)
+            if sys.argv[4] == "on":
+                output += ", {}".format(self.board.display_score())
             if options == "undo":
                 self.undo()
                 self.board.print_board()
-                print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
-            
+                output = "Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name)
+                if sys.argv[4] == "on":
+                    output += ", {}".format(self.board.display_score())
+                print(output)
+
             elif options == "redo":
                 self.redo()
                 self.board.print_board()
-                print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+                output = "Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name)
+                if sys.argv[4] == "on":
+                    output += ", {}".format(self.board.display_score())
+                print(output)
 
             options = input("undo, redo, or next\n")
 
@@ -83,16 +90,18 @@ class PlayGame:
         self.print_curr_board()
         #change while condition to not_win later
         while True:
-            print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))
+            output2 = "Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name)
+
+            if sys.argv[4] == "on":
+                output2 += ", {}".format(self.board.display_score())
+
+            print(output2)
             
             if not (self.board.check_won(self.board.curr_player) is None and self.board.check_won(self.board.get_opponent(self.board.curr_player)) is None):
                 break
             
             if sys.argv[3] == "on":
                 self.prompt()
-
-            # if sys.argv[4] == "on":
-            #     pass
 
             if isinstance(self.board.curr_player, HumanPlayer):
                 # print("Turn: {}, {} ({}{})".format(self.memento.cur_board+1, self.board.curr_player.color, self.board.curr_player.worker1.name, self.board.curr_player.worker2.name))

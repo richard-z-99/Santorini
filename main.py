@@ -35,7 +35,7 @@ class Memento:
             self.cur_board += 1
 
     def next(self, new_board):
-        self.history[:self.cur_board+1]
+        self.history = self.history[:self.cur_board+1]
         self.history.append(new_board)
         self.cur_board += 1
 
